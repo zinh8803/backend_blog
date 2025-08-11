@@ -1,19 +1,19 @@
 import User from "./User";
-// import Post from "./Post";
+import Post from "./Post";
 // import Comment from "./Comment";
 
 // Define relationships
-// User.hasMany(Post, {
-//   sourceKey: "id",
-//   foreignKey: "userId",
-//   as: "posts",
-// });
+User.hasMany(Post, {
+  sourceKey: "id",
+  foreignKey: "userId",
+  as: "posts",
+});
 
-// Post.belongsTo(User, {
-//   targetKey: "id",
-//   foreignKey: "userId",
-//   as: "author",
-// });
+Post.belongsTo(User, {
+  targetKey: "id",
+  foreignKey: "userId",
+  as: "author",
+});
 
 // Post.hasMany(Comment, {
 //   sourceKey: "id",
@@ -33,4 +33,4 @@ import User from "./User";
 //   as: "author",
 // });
 
-export { User};
+export { User, Post };

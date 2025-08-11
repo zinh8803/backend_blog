@@ -1,30 +1,34 @@
-// import { FilterQuery } from "mongoose";
-// import Post from "../models/post.model";
-// import { IPost, IPostInput } from "../interfaces/post.interface";
+import Post from "../models/Post";
+import { IPost, IPostInput } from "../interfaces/post.interface";
+export class PostRepository {
+  async findAll(query?: any): Promise<IPost[]> {
+    const whereClause = query || {};
+    return Post.findAll({
+      where: whereClause,
+    });
+  }
 
-// export class PostRepository {
-//   async findAll(query?: FilterQuery<IPost>): Promise<IPost[]> {
-//     return Post.find(query || {})
-//       .sort({ createdAt: -1 })
-//       .exec();
-//   }
+  async findById(id: string): Promise<IPost | null> {
+    return Post.findByPk(Number(id));
+  }
 
-//   async findById(id: string): Promise<IPost | null> {
-//     return Post.findById(id).exec();
-//   }
+  async create(data: IPostInput): Promise<IPost> {
+    return Post.create(data);
+  }
 
-//   async create(data: IPostInput): Promise<IPost> {
-//     const post = new Post(data);
-//     return post.save();
-//   }
+  async update(id: string, data: Partial<IPostInput>): Promise<IPost | null> {
+    await Post.update(data, {
+      where: { id: Number(id) },
+    });
+    return Post.findByPk(Number(id));
+  }
 
-//   async update(id: string, data: Partial<IPostInput>): Promise<IPost | null> {
-//     return Post.findByIdAndUpdate(id, { $set: data }, { new: true }).exec();
-//   }
+  async delete(id: string): Promise<IPost | null> {
+    const post = await Post.findByPk(Number(id));
+    if (!post) return null;
+    await post.destroy();
+    return post;
+  }
+}
 
-//   async delete(id: string): Promise<IPost | null> {
-//     return Post.findByIdAndDelete(id).exec();
-//   }
-// }
-
-// export default new PostRepository();
+export default new PostRepository();

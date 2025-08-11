@@ -1,9 +1,9 @@
-// import { IPost, IPostInput } from "../interfaces/post.interface";
-// import PostRepository from "../repositories/post.repository";
+import { IPost } from "../interfaces/post.interface";
+import PostRepository from "../repositories/post.repository";
 
-// export const getAllPosts = async (): Promise<IPost[]> => {
-//   return PostRepository.findAll();
-// };
+export const getAllPosts = async (): Promise<IPost[]> => {
+  return PostRepository.findAll();
+};
 
 // export const getPostById = async (id: string): Promise<IPost | null> => {
 //   return PostRepository.findById(id);

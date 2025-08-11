@@ -1,4 +1,3 @@
-import { Op } from "sequelize";
 import User from "../models/User";
 import { IUser, IUserInput } from "../interfaces/user.interface";
 

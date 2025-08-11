@@ -1,18 +1,18 @@
-// import { Request, Response, NextFunction } from "express";
-// import * as postService from "../services/post.service";
+import { Request, Response, NextFunction } from "express";
+import * as postService from "../services/post.service";
 
-// export const getAllPosts = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ): Promise<void> => {
-//   try {
-//     const posts = await postService.getAllPosts();
-//     res.json(posts);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+export const getAllPosts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const posts = await postService.getAllPosts();
+    res.json(posts);
+  } catch (error) {
+    next(error);
+  }
+};
 
 // export const getPostById = async (
 //   req: Request,
