@@ -1,81 +1,37 @@
-import { DataTypes, Model, Optional } from "sequelize";
-import sequelize from "../config/database";
+import mongoose, { Schema, Document } from "mongoose";
 
-interface UserAttributes {
-  id?: number;
+export interface IUser extends Document {
   username: string;
   email: string;
   password: string;
   firstName?: string;
   lastName?: string;
   role: "user" | "admin";
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-interface UserCreationAttributes
-  extends Optional<
-    UserAttributes,
-    "id" | "firstName" | "lastName" | "role" | "createdAt" | "updatedAt"
-  > {}
-
-class User
-  extends Model<UserAttributes, UserCreationAttributes>
-  implements UserAttributes
-{
-  public id!: number;
-  public username!: string;
-  public email!: string;
-  public password!: string;
-  public firstName?: string;
-  public lastName?: string;
-  public role!: "user" | "admin";
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
-}
-
-User.init(
+const UserSchema: Schema = new Schema(
   {
-    id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
-      primaryKey: true,
-    },
     username: {
-      type: DataTypes.STRING(128),
-      allowNull: false,
+      type: String,
+      required: true,
       unique: true,
+      minlength: 3,
+      maxlength: 20,
     },
     email: {
-      type: DataTypes.STRING(128),
-      allowNull: false,
+      type: String,
+      required: true,
       unique: true,
-      validate: { isEmail: true },
+      match: /\S+@\S+\.\S+/,
     },
-    password: {
-      type: DataTypes.STRING(128),
-      allowNull: false,
-    },
-    firstName: {
-      type: DataTypes.STRING(128),
-      allowNull: true,
-    },
-    lastName: {
-      type: DataTypes.STRING(128),
-      allowNull: true,
-    },
-    role: {
-      type: DataTypes.ENUM("user", "admin"),
-      allowNull: false,
-      defaultValue: "user",
-    },
-    createdAt: DataTypes.DATE,
-    updatedAt: DataTypes.DATE,
+    password: { type: String, required: true, minlength: 6 },
+    firstName: { type: String },
+    lastName: { type: String },
+    role: { type: String, enum: ["user", "admin"], default: "user" },
   },
-  {
-    tableName: "users",
-    sequelize,
-  }
+  { timestamps: true }
 );
 
-export default User;
+export default mongoose.model<IUser>("User", UserSchema);

@@ -1,6 +1,6 @@
 import express from "express";
 // Import route modules
-import postRoutes from "./post.routes";
+//import postRoutes from "./post.routes";
 import userRoutes from "./user.routes";
 
 const router = express.Router();
@@ -11,7 +11,7 @@ router.get("/", (req, res) => {
 });
 
 // Mount route modules
-router.use("/posts", postRoutes);
+//router.use("/posts", postRoutes);
 router.use("/users", userRoutes);
 
 export default router;

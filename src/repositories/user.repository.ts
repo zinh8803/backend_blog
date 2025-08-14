@@ -1,57 +1,34 @@
-import User from "../models/User";
-import { IUser, IUserInput } from "../interfaces/user.interface";
+import User, { IUser } from "../models/User";
+import { IUserInput } from "../interfaces/user.interface";
 
 export class UserRepository {
   async findAll(query?: any): Promise<IUser[]> {
-    const whereClause = query || {};
-    return User.findAll({
-      attributes: { exclude: ["password"] },
-      where: whereClause,
-    });
+    return User.find(query || {})
+      .select("-password")
+      .exec();
   }
 
   async findById(id: string): Promise<IUser | null> {
-    return User.findByPk(Number(id), {
-      attributes: { exclude: ["password"] },
-    });
+    return User.findById(id).select("-password").exec();
   }
 
   async findByEmail(email: string): Promise<IUser | null> {
-    return User.findOne({
-      where: { email },
-    });
+    return User.findOne({ email }).exec();
   }
 
   async create(data: IUserInput): Promise<IUser> {
-    return User.create(data);
+    const user = new User(data);
+    return user.save();
   }
 
   async update(id: string, data: Partial<IUserInput>): Promise<IUser | null> {
-    // First update the record
-    await User.update(data, {
-      where: { id: Number(id) },
-    });
-
-    // Then fetch the updated record
-    const updatedUser = await User.findByPk(Number(id), {
-      attributes: { exclude: ["password"] },
-    });
-
-    return updatedUser;
+    return User.findByIdAndUpdate(id, { $set: data }, { new: true })
+      .select("-password")
+      .exec();
   }
 
   async delete(id: string): Promise<IUser | null> {
-    // Find the user first
-    const user = await User.findByPk(Number(id));
-    if (!user) return null;
-
-    // Make a copy of the user data
-    const userData = { ...user.get({ plain: true }) };
-
-    // Delete the user
-    await user.destroy();
-
-    return userData as IUser;
+    return User.findByIdAndDelete(id).exec();
   }
 }
 

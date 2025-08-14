@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as userService from "../services/user.service";
 import { sendResponse } from "../utils/response.util";
+import { STATUS_CODES, ERROR_MESSAGES } from "../constants/api.constants";
 
 export const getAllUsers = async (
   req: Request,
@@ -9,9 +10,14 @@ export const getAllUsers = async (
 ): Promise<void> => {
   try {
     const users = await userService.getAllUsers();
-    sendResponse(res, 200, true, undefined, users);
+    sendResponse(res, STATUS_CODES.OK, true, undefined, users);
   } catch (error) {
-    next(error);
+    sendResponse(
+      res,
+      STATUS_CODES.INTERNAL_SERVER,
+      false,
+      ERROR_MESSAGES.SERVER_ERROR
+    );
   }
 };
 
@@ -23,12 +29,22 @@ export const getUserById = async (
   try {
     const user = await userService.getUserById(req.params.id);
     if (!user) {
-      res.status(404).json({ message: "User not found" });
+      sendResponse(
+        res,
+        STATUS_CODES.NOT_FOUND,
+        false,
+        ERROR_MESSAGES.NOT_FOUND
+      );
       return;
     }
-    res.json(user);
+    sendResponse(res, STATUS_CODES.OK, true, undefined, user);
   } catch (error) {
-    next(error);
+    sendResponse(
+      res,
+      STATUS_CODES.INTERNAL_SERVER,
+      false,
+      ERROR_MESSAGES.SERVER_ERROR
+    );
   }
 };
 
@@ -39,9 +55,14 @@ export const createUser = async (
 ): Promise<void> => {
   try {
     const user = await userService.createUser(req.body);
-    res.status(201).json(user);
+    sendResponse(res, STATUS_CODES.CREATED, true, undefined, user);
   } catch (error) {
-    next(error);
+    sendResponse(
+      res,
+      STATUS_CODES.INTERNAL_SERVER,
+      false,
+      ERROR_MESSAGES.SERVER_ERROR
+    );
   }
 };
 
@@ -53,12 +74,22 @@ export const updateUser = async (
   try {
     const user = await userService.updateUser(req.params.id, req.body);
     if (!user) {
-      res.status(404).json({ message: "User not found" });
+      sendResponse(
+        res,
+        STATUS_CODES.NOT_FOUND,
+        false,
+        ERROR_MESSAGES.NOT_FOUND
+      );
       return;
     }
-    res.json(user);
+    sendResponse(res, STATUS_CODES.OK, true, undefined, user);
   } catch (error) {
-    next(error);
+    sendResponse(
+      res,
+      STATUS_CODES.INTERNAL_SERVER,
+      false,
+      ERROR_MESSAGES.SERVER_ERROR
+    );
   }
 };
 
@@ -70,11 +101,21 @@ export const deleteUser = async (
   try {
     const result = await userService.deleteUser(req.params.id);
     if (!result) {
-      res.status(404).json({ message: "User not found" });
+      sendResponse(
+        res,
+        STATUS_CODES.NOT_FOUND,
+        false,
+        ERROR_MESSAGES.NOT_FOUND
+      );
       return;
     }
-    res.status(204).end();
+    sendResponse(res, STATUS_CODES.NO_CONTENT, true);
   } catch (error) {
-    next(error);
+    sendResponse(
+      res,
+      STATUS_CODES.INTERNAL_SERVER,
+      false,
+      ERROR_MESSAGES.SERVER_ERROR
+    );
   }
 };
