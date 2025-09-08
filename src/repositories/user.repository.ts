@@ -13,7 +13,7 @@ export class UserRepository {
   }
 
   async findByEmail(email: string): Promise<IUser | null> {
-    return User.findOne({ email }).exec();
+    return User.findOne({ email }).exec(); // trả về cả password
   }
 
   async create(data: IUserInput): Promise<IUser> {

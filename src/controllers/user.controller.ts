@@ -119,3 +119,52 @@ export const deleteUser = async (
     );
   }
 };
+
+export const register = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const user = await userService.registerUser(req.body);
+    sendResponse(res, STATUS_CODES.CREATED, true, undefined, user);
+  } catch (error) {
+    sendResponse(
+      res,
+      STATUS_CODES.INTERNAL_SERVER,
+      false,
+      ERROR_MESSAGES.SERVER_ERROR
+    );
+  }
+};
+
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { email, password } = req.body;
+    const result = await userService.loginUser(email, password);
+    if (!result) {
+      sendResponse(
+        res,
+        STATUS_CODES.UNAUTHORIZED,
+        false,
+        "Email hoặc mật khẩu không đúng"
+      );
+      return;
+    }
+    sendResponse(res, STATUS_CODES.OK, true, undefined, {
+      user: result.user,
+      token: result.token,
+    });
+  } catch (error) {
+    sendResponse(
+      res,
+      STATUS_CODES.INTERNAL_SERVER,
+      false,
+      ERROR_MESSAGES.SERVER_ERROR
+    );
+  }
+};
